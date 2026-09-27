@@ -1,0 +1,55 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Python packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs and caches
+*.log
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local data / model artifacts (if any)
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# Flask static cache
+instance/
+
+# If you want to ignore uploaded files or generated outputs
+uploads/
+
+# Optional: ignore local notebooks if they are not meant to be committed
+# *.ipynb

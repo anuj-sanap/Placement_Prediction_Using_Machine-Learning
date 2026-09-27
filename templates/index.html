@@ -3,87 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/style.css">
-    <title>Placement Prediction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Build your profile | Placement Prediction</title>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Placement Prediction App</h1>
+<body class="tool-page">
+    {% set form = form_data|default({}) %}
+    <div class="site-frame">
+        <header class="site-header">
+            <a class="brand" href="{{ url_for('h') }}" aria-label="Placement Prediction home">
+                <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span>Placement<br>Prediction</span>
+            </a>
+            <nav class="site-nav" aria-label="Main navigation">
+                <a href="{{ url_for('h') }}">Home</a>
+                <a class="nav-action" href="{{ url_for('about') }}">About <span aria-hidden="true">&#8599;</span></a>
+            </nav>
         </header>
-        <form action="{{ url_for('predict') }}" method="GET">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
+
+        <main class="page-shell">
+            <div class="page-heading">
+                <div>
+                    <p class="eyebrow">STUDENT PLACEMENT / FORECAST</p>
+                    <h1>Build your profile</h1>
+                    <p class="page-intro">Your details stay in this estimate. Add the academic and experience signals used by the model.</p>
                 </div>
-                <div class="form-group">
-                    <label for="branch">Branch</label>
-                    <select id="branch" name="branch" required>
-                        <option value="" disabled selected>Select branch</option>
-                        <option>CSE</option>
-                        <option>ISE</option>
-                        <option>ECE</option>
-                        <option>CSE-AI</option>
-                        <option>MECHANICAL ENGINEERING</option>
-                        <option>CIVIL ENGINEERING</option>
-                        <option>CSE-DS</option>
-                        <option>CSE-CY</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="cgpa">CGPA</label>
-                    <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="skills">Skills</label>
-                    <input type="text" id="skills" name="skills" required>
-                </div>
-                <div class="form-group">
-                    <label for="internship">Internship</label>
-                    <select id="internship" name="internship" required>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="hackathon">Hackathon</label>
-                    <select id="hackathon" name="hackathon" required>
-                        <option value="1">Yes</option>
-                        <option value="0">No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="projects">Major Projects</label>
-                    <input type="number" id="projects" name="projects" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="workshops">Certifications</label>
-                    <input type="number" id="workshops" name="workshops" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="mini_projects">Mini Projects</label>
-                    <input type="number" id="mini_projects" name="mini_projects" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="communication_skills">Communication Rating</label>
-                    <input type="number" id="communication_skills" name="communication_skills" min="0" max="10" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="tw_percentage">12th Percentage</label>
-                    <input type="number" id="tw_percentage" name="tw_percentage" min="0" max="100" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="te_percentage">10th Percentage</label>
-                    <input type="number" id="te_percentage" name="te_percentage" min="0" max="100" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="backlogs">Backlogs</label>
-                    <input type="number" id="backlogs" name="backlogs" min="0" required>
-                </div>
+                <span class="step-label">PROFILE INPUT <span>01 / 01</span></span>
             </div>
-            <button type="submit">Predict Placement</button>
-        </form>
+
+            <div class="tool-layout">
+                <form class="prediction-form" id="prediction-form" action="{{ url_for('predict') }}" method="POST">
+                    {% if error %}
+                    <p class="form-error" role="alert">{{ error }}</p>
+                    {% endif %}
+
+                    <fieldset class="field-section">
+                        <legend><span>Student and academics</span><span class="section-number">01</span></legend>
+                        <div class="form-grid">
+                            <div class="form-field field-wide">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" value="{{ form.get('name', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="cgpa">CGPA <span>out of 10</span></label>
+                                <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" inputmode="decimal" placeholder="e.g. 8.4" value="{{ form.get('cgpa', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="tw_percentage">12th percentage <span>0-100</span></label>
+                                <input type="number" id="tw_percentage" name="tw_percentage" min="0" max="100" step="0.01" inputmode="decimal" placeholder="e.g. 82" value="{{ form.get('tw_percentage', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="te_percentage">10th percentage <span>0-100</span></label>
+                                <input type="number" id="te_percentage" name="te_percentage" min="0" max="100" step="0.01" inputmode="decimal" placeholder="e.g. 88" value="{{ form.get('te_percentage', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="backlogs">Backlogs</label>
+                                <input type="number" id="backlogs" name="backlogs" min="0" step="1" inputmode="numeric" placeholder="0" value="{{ form.get('backlogs', '') }}" required>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="field-section">
+                        <legend><span>Projects and skills</span><span class="section-number">02</span></legend>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label for="projects">Major projects</label>
+                                <input type="number" id="projects" name="projects" min="0" step="1" inputmode="numeric" placeholder="e.g. 2" value="{{ form.get('projects', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="mini_projects">Mini projects</label>
+                                <input type="number" id="mini_projects" name="mini_projects" min="0" step="1" inputmode="numeric" placeholder="e.g. 3" value="{{ form.get('mini_projects', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="workshops">Workshops and certifications</label>
+                                <input type="number" id="workshops" name="workshops" min="0" step="1" inputmode="numeric" placeholder="e.g. 2" value="{{ form.get('workshops', '') }}" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="communication_skills">Communication rating <span>out of 10</span></label>
+                                <input type="number" id="communication_skills" name="communication_skills" min="0" max="10" step="0.1" inputmode="decimal" placeholder="e.g. 7.5" value="{{ form.get('communication_skills', '') }}" required>
+                            </div>
+                            <div class="form-field field-wide">
+                                <label for="skills">Skill areas <span>separate with commas</span></label>
+                                <input type="text" id="skills" name="skills" autocomplete="off" placeholder="Python, SQL, data analysis" value="{{ form.get('skills', '') }}" aria-describedby="skills-help" required>
+                                <p class="field-help" id="skills-help">The model uses the number of skill areas in your profile.</p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="field-section">
+                        <legend><span>Experience</span><span class="section-number">03</span></legend>
+                        <div class="form-grid form-grid-choices">
+                            <div class="form-field">
+                                <label for="internship">Completed an internship?</label>
+                                <select id="internship" name="internship" required>
+                                    <option value="" disabled {% if form.get('internship', '') == '' %}selected{% endif %}>Choose an option</option>
+                                    <option value="1" {% if form.get('internship', '') == '1' %}selected{% endif %}>Yes</option>
+                                    <option value="0" {% if form.get('internship', '') == '0' %}selected{% endif %}>No</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="hackathon">Participated in a hackathon?</label>
+                                <select id="hackathon" name="hackathon" required>
+                                    <option value="" disabled {% if form.get('hackathon', '') == '' %}selected{% endif %}>Choose an option</option>
+                                    <option value="1" {% if form.get('hackathon', '') == '1' %}selected{% endif %}>Yes</option>
+                                    <option value="0" {% if form.get('hackathon', '') == '0' %}selected{% endif %}>No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <p class="form-disclaimer">Your estimate is based on the model's training data.</p>
+                        <button class="primary-button" id="submit-button" type="submit">
+                            <span id="submit-label">Calculate estimate</span>
+                            <span aria-hidden="true">&#8594;</span>
+                        </button>
+                    </div>
+                </form>
+
+                <aside class="live-panel" aria-label="Live profile summary">
+                    <div class="live-panel-heading">
+                        <p class="eyebrow">LIVE PROFILE</p>
+                        <span class="live-indicator" aria-hidden="true"></span>
+                    </div>
+                    <div class="completion-block">
+                        <div class="completion-copy"><span>Profile completion</span><strong id="completion-value">0%</strong></div>
+                        <div class="progress-track" role="progressbar" aria-label="Profile completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="completion-progress">
+                            <span id="completion-bar"></span>
+                        </div>
+                        <p id="completion-text" aria-live="polite">Complete the required fields to continue.</p>
+                    </div>
+                    <div class="preview-metrics">
+                        <div><strong id="preview-cgpa">--</strong><span>CGPA / 10</span></div>
+                        <div><strong id="preview-projects">--</strong><span>Major projects</span></div>
+                        <div><strong id="preview-skills">0</strong><span>Skill areas</span></div>
+                    </div>
+                    <div class="preview-details">
+                        <div><span>Internship</span><strong id="preview-internship">Not selected</strong></div>
+                        <div><span>Hackathon</span><strong id="preview-hackathon">Not selected</strong></div>
+                        <div><span>Student</span><strong id="preview-name">Your name</strong></div>
+                    </div>
+                    <div class="skill-preview" aria-live="polite">
+                        <div class="skill-preview-heading"><span>Skill areas</span><span id="skill-count">0</span></div>
+                        <div class="skill-chips" id="skill-chips"><span class="empty-skill">Add comma-separated skills</span></div>
+                    </div>
+                </aside>
+            </div>
+        </main>
     </div>
+
+    <script>
+        const form = document.querySelector('#prediction-form');
+        const requiredFields = [...form.querySelectorAll('[required]')];
+        const progress = document.querySelector('#completion-progress');
+        const progressBar = document.querySelector('#completion-bar');
+        const skillInput = document.querySelector('#skills');
+        const skillChips = document.querySelector('#skill-chips');
+
+        function updatePreview() {
+            const completed = requiredFields.filter((field) => field.value.trim() !== '' && field.checkValidity()).length;
+            const percentage = Math.round((completed / requiredFields.length) * 100);
+            document.querySelector('#completion-value').textContent = `${percentage}%`;
+            document.querySelector('#completion-text').textContent = `${completed} of ${requiredFields.length} required fields complete`;
+            progress.setAttribute('aria-valuenow', percentage);
+            progressBar.style.width = `${percentage}%`;
+
+            document.querySelector('#preview-name').textContent = document.querySelector('#name').value.trim() || 'Your name';
+            document.querySelector('#preview-cgpa').textContent = document.querySelector('#cgpa').value || '--';
+            document.querySelector('#preview-projects').textContent = document.querySelector('#projects').value || '--';
+            document.querySelector('#preview-internship').textContent = document.querySelector('#internship').selectedOptions[0].textContent === 'Choose an option' ? 'Not selected' : document.querySelector('#internship').selectedOptions[0].textContent;
+            document.querySelector('#preview-hackathon').textContent = document.querySelector('#hackathon').selectedOptions[0].textContent === 'Choose an option' ? 'Not selected' : document.querySelector('#hackathon').selectedOptions[0].textContent;
+
+            const skills = skillInput.value.split(',').map((skill) => skill.trim()).filter(Boolean);
+            document.querySelector('#preview-skills').textContent = skills.length;
+            document.querySelector('#skill-count').textContent = skills.length;
+            skillChips.replaceChildren();
+            if (skills.length === 0) {
+                const empty = document.createElement('span');
+                empty.className = 'empty-skill';
+                empty.textContent = 'Add comma-separated skills';
+                skillChips.append(empty);
+            } else {
+                skills.forEach((skill) => {
+                    const chip = document.createElement('span');
+                    chip.className = 'skill-chip';
+                    chip.textContent = skill;
+                    skillChips.append(chip);
+                });
+            }
+        }
+
+        form.addEventListener('input', updatePreview);
+        form.addEventListener('change', updatePreview);
+        form.addEventListener('submit', () => {
+            document.querySelector('#submit-button').disabled = true;
+            document.querySelector('#submit-label').textContent = 'Calculating...';
+        });
+        updatePreview();
+    </script>
 </body>
 </html>
